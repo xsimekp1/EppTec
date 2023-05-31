@@ -39,6 +39,6 @@ volne_jachty = rezervacni_system.vyhledat_jachty(6, 160)
 for jachta in volne_jachty:
     print(f"Dostupná jachta: {jachta.nazev}, kapacita: {jachta.kapacita}, cena: {jachta.cena}")
 
-# Rezervace jachty
+# Rezervace jachty - rezervace první jachty v seznamu
 jachta = volne_jachty[0]
 rezervacni_system.rezervovat_jachtu(jachta)
