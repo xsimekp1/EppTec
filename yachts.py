@@ -12,33 +12,32 @@ class RezervacniSystem:
     def pridat_jachtu(self, jachta):
         self.jachty.append(jachta)
 
-    def vyhledat_jachty(self, kapacita, cena_max):
-        volne_jachty = []
+    def zobrazit_jachty(self):
         for jachta in self.jachty:
-            if not jachta.rezervovana and jachta.kapacita >= kapacita and jachta.cena <= cena_max:
-                volne_jachty.append(jachta)
-        return volne_jachty
+            print(f"Jachta: {jachta.nazev}, kapacita: {jachta.kapacita}, cena: {jachta.cena}, dostupnost: {'Volná' if not jachta.rezervovana else 'Obsazená'}")
 
-    def rezervovat_jachtu(self, jachta):
-        if not jachta.rezervovana:
-            jachta.rezervovana = True
-            print(f"Jachta {jachta.nazev} byla úspěšně rezervována.")
-        else:
-            print("Omlouváme se, ale tato jachta je již rezervována.")
+    def odstranit_nevhodne_jachty(self, kapacita, cena_max):
+        nevhodne_jachty = []
+        for jachta in self.jachty:
+            if jachta.rezervovana or jachta.kapacita < kapacita or jachta.cena > cena_max:          # ověřuji zde ty podmínky
+                nevhodne_jachty.append(jachta)                                                      # přidám do seznamu nevhodných - v zadání je jen mazání... možno vynechat, dále s nimi nepracuji
+        for jachta in nevhodne_jachty:                                                               
+            self.jachty.remove(jachta)                                                              # zde mažu se seznamu
+        print("Nevhodné jachty byly odstraněny.")                                                   # zobrazí se i v případě nesmazání žádné, nutno přidat podmínku případně
 
 # Vytvoření rezervačního systému
 rezervacni_system = RezervacniSystem()
 
 # Přidání jachet
-rezervacni_system.pridat_jachtu(Jachta("Jachta 1", 4, 100))
-rezervacni_system.pridat_jachtu(Jachta("Jachta 2", 6, 150))
-rezervacni_system.pridat_jachtu(Jachta("Jachta 3", 8, 200))
+rezervacni_system.pridat_jachtu(Jachta("Boat-iful Disaster", 4, 100))
+rezervacni_system.pridat_jachtu(Jachta("Boatzilla", 6, 150))
+rezervacni_system.pridat_jachtu(Jachta("Ship Happens", 8, 200))
 
-# Vyhledání dostupných jachet
-volne_jachty = rezervacni_system.vyhledat_jachty(6, 160)
-for jachta in volne_jachty:
-    print(f"Dostupná jachta: {jachta.nazev}, kapacita: {jachta.kapacita}, cena: {jachta.cena}")
+# Zobrazení všech jachet
+rezervacni_system.zobrazit_jachty()
 
-# Rezervace jachty - rezervace první jachty v seznamu
-jachta = volne_jachty[0]
-rezervacni_system.rezervovat_jachtu(jachta)
+# Odstranění nevhodných jachet
+rezervacni_system.odstranit_nevhodne_jachty(6, 160)                  # zde 
+
+# Zobrazení aktualizovaného seznamu jachet
+rezervacni_system.zobrazit_jachty()
