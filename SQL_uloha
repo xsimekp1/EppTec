@@ -1,0 +1,66 @@
+Vytvoření jednoduchého datového modelu:
+
+
+1)
+
+Tabulky:
+Klient
+Ucet
+Transakce
+Balance
+
+2)
+
+Základní sada atributů v jednotlivých tabulkách:
+Klient
+id_klient (int) - primární klíč
+jmeno (varchar)
+prijmeni (varchar)
+
+Účet
+id_ucet (int) - primární klíč
+id_klient (int) - cizý klíč
+saldo (float)
+
+Transakce
+id_transakce (int) - primární klíč
+id_ucet (int) - cizý klíč
+TYP_TRANSAKCE (int)  - cizý klíč   (id_typ_transakce (primární klíč) název_typu_transakce)
+
+Balance
+id_balance (int) - primární klíč
+id_ucet (int) - cizý klíč
+datum (date)
+jistina (float)
+urok (float)
+poplatky (float)
+
+4)
+
+SELECT Klient.id_klient, Klient.jmeno, Klient.prijmeni
+FROM Klient
+JOIN Ucet ON Klient.id_klient = Ucet.id_klient
+JOIN Balance ON Ucet.id_učet = Balance.id_ucet
+WHERE Balance.datum = DATEADD(DAY, -1, EOMONTH(CURRENT_DATE, -1))
+GROUP BY Klient.id_klient, Klient.jmeno, Klient.prijmeni
+HAVING SUM(Balance.jistina) > c;
+
+poznámka: EOMONTH - není podporována ve všech databázových systémech
+
+6)
+
+SELECT Klient.id_klient, Klient.jmeno, Klient.prijmeni, 
+    SUM(Balance.jistina + Balance.urok + Balance.poplatky) AS pohledavka
+FROM Klient
+JOIN Ucet ON Klient.id_klient = Ucet.id_klient
+JOIN Balance ON Ucet.id_ucet = Balance.id_ucet
+WHERE Balance.datum = DATEADD(DAY, -1, EOMONTH(CURRENT_DATE))
+GROUP BY Klient.id_klient, Klient.jmeno, Klient.prijmeni
+ORDER BY pohledavka DESC
+LIMIT 10;
+
+
+
+
+
+
